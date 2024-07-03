@@ -18,5 +18,5 @@ jobs:
       run: sudo apt-get update; sudo apt-get install cc65
 
     - name: compile
-      run: make alle
+      run: make all
 
