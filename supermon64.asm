@@ -18,6 +18,19 @@
 ; any errors. Sadly Jim isn't around to ask anymore. If you spot any
 ; misunderstanings or errors in my comments, please report them.
 
+
+.import SUPER
+.export BREAK
+.export MSGBAS
+.export CRLF
+.export NMPRNT
+.export CVTDEC
+.export TMP0
+.export SUPAD
+.export SNDMSG
+.export MSG4
+.export STRT
+
 ; -----------------------------------------------------------------------------
 ; temporary pointers
 TMP0    = $C1               ; used to return input, often holds end address
@@ -32,7 +45,6 @@ FA      = $BA               ; current device number
 FNADR   = $BB               ; pointer to current filename
 NDX     = $C6               ; number of characters in keyboard buffer
 KEYD    = $0277             ; keyboard buffer
-BKVEC   = $0316             ; BRK instruction vector (official name CBINV)
 
 ;        *= $0100            ; store variables in tape error buffer
 .bss
@@ -96,39 +108,9 @@ SAVE    = $FFD8             ; save to device
 STOP    = $FFE1             ; check the STOP key
 GETIN   = $FFE4             ; get a character
 WARMSTART = $B000
-; -----------------------------------------------------------------------------
-; set up origin
 
-;        .WEAK
-;ORG     = $9519
-;        .ENDWEAK
-;
-;*       = ORG
 .code
 
-; -----------------------------------------------------------------------------
-; initial entry point
-
-SUPER:  JMP STRT
-        LDY #MSG4-MSGBAS    ; display "..SYS "
-        JSR SNDMSG
-        LDA SUPAD           ; store entry point address in tmp0
-        STA TMP0
-        LDA SUPAD+1
-        STA TMP0+1
-        JSR CVTDEC          ; convert address to decimal
-        LDA #0
-        LDX #6
-        LDY #3
-        JSR NMPRNT          ; print entry point address
-        JSR CRLF
-        LDA LINKAD          ; set BRK vector
-        STA BKVEC
-        LDA LINKAD+1
-        STA BKVEC+1
-        LDA #$80            ; disable kernel control messages
-        JSR SETMSG          ; and enable error messages
-        BRK
 
 ; -----------------------------------------------------------------------------
 ; exit monitor [X]
@@ -1539,5 +1521,4 @@ KADDR:  .WORD ASSEM-1,COMPAR-1,DISASS-1,FILL-1
 MODTAB: .BYTE $10,$0A,$08,02    ; modulo number systems
 LENTAB: .BYTE $04,$03,$03,$01   ; bits per digit
 
-LINKAD: .WORD BREAK             ; address of brk handler
 SUPAD:  .WORD SUPER             ; address of entry point
