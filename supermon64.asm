@@ -106,7 +106,7 @@ U9F:    .byte 1             ; index into assembler work buffer
 
 .code
 
-
+JMP     STRT
 ; -----------------------------------------------------------------------------
 ; exit monitor [X]
 EXIT:   JMP (WARMSTART)         ; jump to warm-start vector to reinitialize BASIC
